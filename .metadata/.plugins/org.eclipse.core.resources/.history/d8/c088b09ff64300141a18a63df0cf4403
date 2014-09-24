@@ -1,0 +1,119 @@
+package com.rozetka;
+
+
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.collections.map.HashedMap;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.htmlunit.HtmlUnitDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+public class Driver {
+
+	public static void main(String[] args) {
+		
+		System.setProperty("webdriver.chrome.driver", "D:/Rozetka/chromedriver.exe");
+	WebDriver driver = new ChromeDriver();
+		//WebDriver driver = new HtmlUnitDriver();
+		driver.get("http://rozetka.com.ua");
+		WebElement element = driver.findElement(By.xpath("//span[contains(text(),'Телефоны, MP3, GPS')]"));
+		//Go to "Телефоны, MP3, GPS"
+		element.findElement(By.xpath("..")).click();
+		//Go to Смартфоны
+		//Wait for upload
+		new WebDriverWait(driver, 10).until(ExpectedConditions.elementToBeClickable(By.xpath("//a[contains(text(),'Смартфоны')]")));		
+		driver.findElement(By.xpath("//a[contains(text(),'Смартфоны')]")).click();		
+		//To list
+		//Wait for upload
+		new WebDriverWait(driver, 10).until(ExpectedConditions.elementToBeClickable(By.xpath("//a[contains(text(),'списком')]")));
+		driver.findElement(By.xpath("//a[contains(text(),'списком')]")).click();
+
+		
+		
+		
+		//Collect all smartphones
+	    List <WebElement> webElements = new ArrayList<WebElement>();
+	    Map<String, String> topSmartphones = new HashedMap();
+	    //Page 1,2,3
+	    for(int i = 1; i <= 3; i++ ){
+	    	webElements.clear();
+	    	//Click to next page. We pass first page
+	    	if (i>1){
+	    		driver.findElement(By.id("page" + i)).click();
+	    		new WebDriverWait(driver, 30).until(ExpectedConditions.elementToBeClickable(By.xpath("//a[contains(text(),'плиткой')]")));
+	    	}
+		webElements.addAll(driver.findElements(By.xpath("//div[contains(@class,'g-i-list available clearfix')]")));		
+		for(WebElement webElement: webElements){
+           //Get model of smartphone	
+			String model = webElement.findElement(By.className("g-i-list-right-part")).
+			findElement(By.className("g-i-list-title")).
+			findElement(By.tagName("a")).
+			getText();
+	System.out.println("Model: " + model);
+	//Get price of smartphone
+	String price = webElement.
+			findElement(By.className("g-i-list-right-part")).
+			findElement(By.xpath("div[contains(@class,'g-i-list-price clearfix')]")).
+			findElement(By.name("prices_active_element_original")).
+			findElement(By.name("price")).
+			findElement(By.className("g-i-list-price-uah")).
+			getText();
+	System.out.println("Price: " + price);
+	
+	//Get note of smartphone: ТОП, Акция......
+	String note = null;
+	try {
+		note = webElement.
+				findElement(By.className("g-i-list-left-part")).
+				findElement(By.className("g-i-list-img")).
+				findElement(By.tagName("a")).
+				findElement(By.name("prices_active_element_original")).
+				getAttribute("class");
+				
+				System.out.println("Class: " + note);
+	} catch (Exception e) {
+		// Class attribute doesn`t exist
+	}
+	//Check if 
+	if (note != null)
+	if (note.equals("g-i-list-popularity")) topSmartphones.put(model, price);
+
+	
+	System.out.println("--------------");
+	
+		}
+	    }
+
+System.out.println("Top smartphones" + topSmartphones);
+
+PrintWriter writer;
+try {
+	writer = new PrintWriter("the-file-name.txt", "UTF-8");
+	writer.println(topSmartphones);
+	//writer.println("The second line");
+	writer.close();
+} catch (FileNotFoundException e) {
+	// TODO Auto-generated catch block
+	e.printStackTrace();
+} catch (UnsupportedEncodingException e) {
+	// TODO Auto-generated catch block
+	e.printStackTrace();
+}
+
+
+
+
+		
+		 
+	}
+
+}

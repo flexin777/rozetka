@@ -1,0 +1,50 @@
+package com.rozetka;
+
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+public class Driver {
+
+	public static void main(String[] args) {
+		
+		System.setProperty("webdriver.chrome.driver", "D:/Rozetka/chromedriver.exe");
+		WebDriver driver = new ChromeDriver();
+		driver.get("http://rozetka.com.ua");
+		WebElement element = driver.findElement(By.xpath("//span[contains(text(),'Телефоны, MP3, GPS')]"));
+		//Go to "Телефоны, MP3, GPS"
+		element.findElement(By.xpath("..")).click();
+		//Go to Смартфоны
+		//Wait for upload
+		new WebDriverWait(driver, 10).until(ExpectedConditions.elementToBeClickable(By.xpath("//a[contains(text(),'Смартфоны')]")));		
+		driver.findElement(By.xpath("//a[contains(text(),'Смартфоны')]")).click();
+		
+		//To list
+		//Wait for upload
+		new WebDriverWait(driver, 10).until(ExpectedConditions.elementToBeClickable(By.xpath("//a[contains(text(),'списком')]")));
+		driver.findElement(By.xpath("//a[contains(text(),'списком')]")).click();
+		//driver.get((driver.findElement(By.xpath("//a[contains(text(),'списком')]")).getAttribute("href")).toString());
+	
+		List <WebElement> webElements = new ArrayList<WebElement>();
+		webElements.addAll(driver.findElements(By.className("g-i-list-popularity")));
+		WebElement parent = webElements.get(0).findElement(By.xpath("//div[contains(@class,'g-i-list available clearfix')]"));
+	    //System.out.println((parent.findElement(By.xpath("//a[contains(@class,'underline')]")).getAttribute("a")).toString());
+		 System.out.println((parent.findElement(By.xpath("//a[contains(@class,'underline')]"))));
+		 parent = parent.findElement(By.xpath("//a[contains(@class,'underline')]"));
+		 System.out.println(parent.getText());
+		//By.xpath("//*[contains(@id, 'someId--popup::popupItem')]
+	    //WebElement yourElement = driver.findElement(By.xpath("//td[contains(text(),'MakeGoodDisabled-Programwise_09_44_38_461(n)')]");
+	    //String xpathAttributeValue = targetButton.getAttribute("xpath");
+	   // .//*[@id='head_banner_container']/div[3]/div/div[1]/div[2]/div/div[7]/div[2]/div[1]/a
+	    // .//*[@id='head_banner_container']/div[3]/div/div[1]/div[2]/div/div[10]/div[2]/div[1]/a
+		 
+	}
+
+}
